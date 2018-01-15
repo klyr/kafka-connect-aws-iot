@@ -1,0 +1,27 @@
+plugins {
+    id 'java'
+}
+
+version = '0.1.0'
+
+repositories {
+    mavenCentral()
+}
+
+allprojects {
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:deprecation"
+    }
+}
+
+task fatJar(type: Jar) {
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+dependencies {
+    compile group: 'org.apache.kafka', name: 'connect-api', version: '1.0.0'
+    compile group: 'com.amazonaws', name: 'aws-java-sdk-iot', version: '1.11.263'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.3'
+}
